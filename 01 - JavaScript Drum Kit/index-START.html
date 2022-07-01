@@ -58,7 +58,26 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
-
+  window.addEventListener("keydown", function(event){
+    // selecting the div with the attribute data-key  
+    const key = document.querySelector(`div[data-key="${event.keyCode}"]`);
+    const audio = document.querySelector(`audio[data-key="${event.keyCode}"]`);
+    
+    if(!audio) return; //return if the data-key is not on audio 
+    key.classList.add('playing') // add .playing (location: on style.css line#35) 
+    audio.currentTime = 0;
+    audio.play()
+  })
+  function removeTransition(event){
+    /*
+    the transitionend listen to all the changes
+    console.log(event.propertyName)
+    */
+    if(event.propertyName !== "transform") return; // this way it only wait to the transform to finish, it will still work if you remove this line
+    this.classList.remove('playing')
+  }
+  const keys = document.querySelectorAll('.key');
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
 </script>
 
 
