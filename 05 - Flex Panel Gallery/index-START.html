@@ -24,11 +24,16 @@
     }
 
     .panels {
+      display: flex;
       min-height: 100vh;
       overflow: hidden;
     }
 
     .panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       background: #6B0F9C;
       box-shadow: inset 0 0 0 5px rgba(255,255,255,0.1);
       color: white;
@@ -43,6 +48,7 @@
       font-size: 20px;
       background-size: cover;
       background-position: center;
+      flex: 1;
     }
 
     .panel1 { background-image:url(https://source.unsplash.com/gYl-UtwNg_I/1500x1500); }
@@ -56,6 +62,7 @@
       margin: 0;
       width: 100%;
       transition: transform 0.5s;
+      
     }
 
     .panel p {
@@ -63,15 +70,33 @@
       font-family: 'Amatic SC', cursive;
       text-shadow: 0 0 4px rgba(0, 0, 0, 0.72), 0 0 14px rgba(0, 0, 0, 0.45);
       font-size: 2em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1 0 auto;
+      
     }
-    
+    /* hide the first and last p element */
+    .panel p:first-child{
+      transform: translateY(-100%);
+    }
+    .panel p:last-child{
+      transform: translateY(100%);
+    }
+    /* show the first and last p get them back to original position */
+    .panel.show p:first-child,
+    .panel.show p:last-child{
+      transform: translateY(0);
+    }
     .panel p:nth-child(2) {
       font-size: 4em;
     }
 
     .panel.open {
+      flex: 5;
       font-size: 40px;
     }
+
 
   </style>
 
@@ -105,6 +130,16 @@
   </div>
 
   <script>
+    const panels = document.querySelectorAll('.panel')
+    panels.forEach(panel => panel.addEventListener('click', function(event){
+      this.classList.toggle('open');
+    }))
+    panels.forEach(panel => panel.addEventListener('transitionend', function(event){
+      if (event.propertyName.includes('flex')) {
+        this.classList.toggle('show');
+      }
+      
+    }))
 
   </script>
 
