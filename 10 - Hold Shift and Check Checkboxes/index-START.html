@@ -96,6 +96,34 @@
   </div>
 
 <script>
+  const checkboxes = document.querySelectorAll('input[type=checkbox]');
+  let lastChecked;
+
+  function noLastChecked(){ 
+    return (typeof lastChecked === 'undefined');
+  }
+
+  function handleCheck(e){
+    let inBetween = false;
+    if((e.shiftKey && this.checked) 
+      && (lastChecked != this  
+      && !noLastChecked() 
+      && lastChecked.checked)
+      ){
+      checkboxes.forEach(checkbox => {
+        if(inBetween){
+          checkbox.checked = true;
+        }
+        if(checkbox === this || checkbox === lastChecked){
+          inBetween = !inBetween;
+        }
+      });  
+    }
+    lastChecked = this;
+  }
+
+  checkboxes.forEach(checkbox => checkbox.addEventListener('click', handleCheck));
+  
 </script>
 </body>
 </html>
