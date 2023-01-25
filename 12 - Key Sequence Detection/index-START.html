@@ -7,6 +7,31 @@
 </head>
 <body>
 <script>
+  const recordPress = [];
+  const secretKey = 'sas';
+
+  window.addEventListener('keyup', (e) => {
+    recordPress.push(e.key);
+    recordPress.splice(-secretKey.length - 1, recordPress.length - secretKey.length);
+    
+    // same output using this solution  
+    // recordPress.splice(0, recordPress.length - secretKey.length);
+    
+    if(recordPress.join('') === secretKey){
+      cornify_add();
+    }
+
+    // solution using .shift() method 
+    /*
+    if(recordPress.length > secretKey.length){
+      recordPress.shift();
+      if(recordPress.join('') === secretKey){
+        cornify_add();
+      }
+    }
+    */
+    
+  });
 </script>
 </body>
 </html>
