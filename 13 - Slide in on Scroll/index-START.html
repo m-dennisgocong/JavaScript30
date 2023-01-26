@@ -43,6 +43,7 @@
   </div>
 
   <script>
+    // performance wise this will limit how often function trigger 
     function debounce(func, wait = 20, immediate = true) {
       var timeout;
       return function() {
@@ -58,12 +59,52 @@
       };
     }
 
+    const checkSlide = function(e){
+  
+      imageSlider.forEach(image => {
+        // scroll half way through the image
+        /* 
+        1.) Get how much is scroll-down from bottom position, 
+        add window.scrollY(how much scroll-down base from the top/root)
+        and the window.innerHeight(height of the window) 
+        */
+        const bottomPosition = window.scrollY + window.innerHeight; 
+        
+        // 2.) Get the half height of the image by (image.height / 2)
+        const halfWayImage = (image.height / 2); 
+        
+        // 3.) Slide in the image when scrolling half way through it by deducting 1.) by 2.) 
+        const slideInAt = bottomPosition - halfWayImage; 
+        
+        // scroll pass the image
+
+        /*
+          to measure if you already scroll pass the image, you need the 
+          image.offsetTop(tells how far the image from windows top/root)
+          and add the image.height
+        */
+        const imageBottom = image.offsetTop + image.height;
+
+        const isHalfShown = slideInAt > image.offsetTop;
+        const isNotScrolledPast = window.scrollY < imageBottom;
+
+        if (isHalfShown && isNotScrolledPast) {
+          image.classList.add('active');
+        } else {
+          image.classList.remove('active');
+        }
+      });
+    }
+    // select images element 
+    const imageSlider = document.querySelectorAll('.slide-in');
+    // event listner scroll
+    window.addEventListener('scroll', debounce(checkSlide));
   </script>
 
   <style>
     html {
       box-sizing: border-box;
-      background: #ffc600;
+      background: #222;
       font-family: 'helvetica neue';
       font-size: 20px;
       font-weight: 200;
