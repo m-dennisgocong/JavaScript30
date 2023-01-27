@@ -7,48 +7,178 @@
 <body>
 
   <script>
-    // start with strings, numbers and booleans
+    /* 
+    changing the reference value of strings, numbers or booleans  
+    won't affect the originally copy  
+    */
+    // int example 
+    let age = 100;
+    let age2 = age;
+    console.log(age, age2); // 100 100
+    age = 200; 
+    console.log(age, age2); // 200 100 
+    age2 = 300;
+    console.log(age, age2); // 200 300
 
-    // Let's say we have an array
+    // string example
+    let name = "Dennis";
+    let name2 = name;
+    console.log(name, name2); // Dennis Dennis
+    name = "Dencio";
+    console.log(name, name2); // Dencio Dennis
+
+    let correct = true;
+    let correct2 = correct;
+    console.log(correct, correct2); // true true
+    correct = false;
+    console.log(correct, correct2); // false true
+
+    /*
+    changing the reference value of array will also affect the originally array, 
+    the reference changes will also change the original array   
+    */ 
+
+    // Array Example
     const players = ['Wes', 'Sarah', 'Ryan', 'Poppy'];
+    const copyPlayers = players;
+    console.log("Reference: ");
+    console.log(players, copyPlayers); // ['Wes', 'Sarah', 'Ryan', 'Poppy'], ['Wes', 'Sarah', 'Ryan', 'Poppy'] 
+    copyPlayers[3] = 'Lux'; // changing the reference array will also affect the original
+    console.log(players, copyPlayers); // ['Wes', 'Sarah', 'Ryan', 'Lux'], ['Wes', 'Sarah', 'Ryan', 'Lux'] 
 
-    // and we want to make a copy of it.
+    /*
+    Why? It's because that is an array reference, not an array copy. They both point to the same array!
+    So, how do we fix this? We take a copy instead!
+    */
+    console.log("Copy:");
 
-    // You might think we can just do something like this:
+    // slice
+    const sliceCopy = players.slice(); // slice() will copy the entire array
+    sliceCopy[3] = 'Slice';
+    console.log(`${sliceCopy[3]} method: `);    
+    console.log(players, sliceCopy); // ['Wes', 'Sarah', 'Ryan', 'Poppy'], ['Wes', 'Sarah', 'Ryan', 'Slice'] 
 
-    // however what happens when we update that array?
+    // concat
+    // for me the best use for concat is for combining two array
+    const concatCopy = [].concat(players);
+    concatCopy[3] = 'Concat';
+    console.log(`${concatCopy[3]} method: `);
+    console.log(players, concatCopy);  // ['Wes', 'Sarah', 'Ryan', 'Poppy'], ['Wes', 'Sarah', 'Ryan', 'Concat'] 
 
-    // now here is the problem!
-
-    // oh no - we have edited the original array too!
-
-    // Why? It's because that is an array reference, not an array copy. They both point to the same array!
-
-    // So, how do we fix this? We take a copy instead!
-
-    // one way
-
-    // or create a new array and concat the old one in
-
-    // or use the new ES6 Spread
-
-    // now when we update it, the original one isn't changed
+    // ES6 Spread
+    const spreadCopy = [...players];
+    spreadCopy[3] = 'Spread';
+    console.log(`${spreadCopy[3]} method: `);
+    console.log(players, spreadCopy);  // ['Wes', 'Sarah', 'Ryan', 'Poppy'], ['Wes', 'Sarah', 'Ryan', 'Spread'] 
+    
+    // Array.from
+    const arrayFromCopy = Array.from(players);
+    arrayFromCopy[3] = 'Array.from';
+    console.log(`${arrayFromCopy[3]} method: `);
+    console.log(players, arrayFromCopy); // ['Wes', 'Sarah', 'Ryan', 'Poppy'], ['Wes', 'Sarah', 'Ryan', 'Array.from'] 
+    
 
     // The same thing goes for objects, let's say we have a person object
+    // the changes from reference will affect the original 
 
-    // with Objects
     const person = {
       name: 'Wes Bos',
       age: 80
     };
 
-    // and think we make a copy:
+    const personReference = person;
+    personReference.age = 90;
+    
+    console.log(person, personReference); // { name: "Wes Bos", age: 90 }, { name: "Wes Bos", age: 90 }
+    
+    // Spread Copy
+    const spreadObjectCopy = {...person};
+    spreadObjectCopy.age = 100;
+    console.log("Orignal => Copy using Spread: ")
+    console.log(person, spreadObjectCopy); // { name: "Wes Bos", age: 90 }, { name: "Wes Bos", age: 100 }
 
-    // how do we take a copy instead?
+    // Object.assign Copy
 
-    // We will hopefully soon see the object ...spread
+    const objectAssignCopy = Object.assign({}, person, {age: 200});
+    console.log("Orignal => Copy using Object.assgin: ");
+    console.log(person, objectAssignCopy); // { name: "Wes Bos", age: 90 }, { name: "Wes Bos", age: 200 }
 
     // Things to note - this is only 1 level deep - both for Arrays and Objects. lodash has a cloneDeep method, but you should think twice before using it.
+    // here the example:
+
+    const deepObject = {
+      name: 'deep',
+      address : {
+        street: 'deep street',
+        blk: 16
+      }
+    };
+
+    const copyDeepObject = Object.assign({}, deepObject, {name : 'Deep'});
+    console.log("Deep Object:");
+    console.log(deepObject, copyDeepObject); 
+    // { name: "deep", address: {Object} }, { name: "Deep", address: {Object}}
+    
+    // however changing the copy deep object will affect the orignal pointed object 
+    copyDeepObject.address.blk = 20;
+    console.log(deepObject, copyDeepObject); 
+    /*
+    Original deepObject: the blk is change to 20 
+    {
+      name: 'deep',
+      address : {
+        street: 'deep street',
+        blk: 20
+      }
+    };
+    */
+
+    // using a function or JSON.stringify to solve this
+    // JSON.stringify() = turn object to a string
+    // JSON.parse() = turn it back to object
+    const stringifyObject = JSON.parse(JSON.stringify(deepObject));
+    stringifyObject.address.blk = 30;
+    console.log("JSON.stringify :");
+    console.log(deepObject, stringifyObject); // the original deep object won't change
+    
+    /*
+    Original deepObject: the blk won't change 
+    {
+      name: 'deep',
+      address : {
+        street: 'deep street',
+        blk: 20
+      }
+    };
+
+    Copy stringifyObject: 
+        {
+      name: 'deep',
+      address : {
+        street: 'deep street',
+        blk: 30
+      }
+    };
+    */
+
+    // or use Deep Clone function
+    function cloneObject(obj) {
+      let clone = {};
+      for(let i in obj) {
+        if(obj[i] != null &&  typeof(obj[i])=="object"){
+          clone[i] = cloneObject(obj[i]);
+        }
+        else{
+          clone[i] = obj[i];
+        }
+      }
+      return clone;
+    }
+
+    const cloneFunction = cloneObject(deepObject);
+    cloneFunction.address.blk = 40;
+    console.log("Deep clone Function: ");
+    console.log(deepObject, cloneFunction); // the original object won't be affected by the changes 
 
   </script>
 
