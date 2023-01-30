@@ -22,13 +22,71 @@
     <form class="add-items">
       <input type="text" name="item" placeholder="Item Name" required>
       <input type="submit" value="+ Add Item">
+      <input class="delete-items" type="button" value="Delete">
+      <input class="clear-items" type="button" value="Clear items">
     </form>
+    
   </div>
 
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  const deleteItems = document.querySelector('.delete-items');
+  const clearItems = document.querySelector('.clear-items');
+  const items = JSON.parse(localStorage.getItem('items')) || []; 
+
+  // const checkboxes = document.querySelectorAll('input=[type=checkbox]');
+
+  const populateItemList = (itemsArray = [], itemsList) => {
+    itemsList.innerHTML = itemsArray.map((item, index) => {
+      return `<li class="plate-${index}">
+        <input type="checkbox" data-index=${index} id="item-${index}" ${item.done ? 'checked' : ''}/>
+        <label for="item-${index}">${item.text}</<label>
+        </li>`
+    }).join('');
+  };
+
+  const toggleDone = (e) => {
+    if(!e.target.matches('input')) return;
+    const el = e.target;
+    const index = el.dataset.index;
+    items[index].done = !items[index].done;
+    localStorage.setItem('items', JSON.stringify(items));
+    populateItemList(items, itemsList);
+  }
+
+  const addItem = function(e){
+    e.preventDefault();
+    const item = e.target[0].value;
+    items.push({text: item, done: false });
+    populateItemList(items, itemsList);
+    this.reset();
+    localStorage.setItem('items', JSON.stringify(items));
+  }
+
+  const deleteItem = () => {
+    // look for checked items and delete it
+    items.forEach((item,index) => item.done ? items.splice(index,1) : null);
+    populateItemList(items, itemsList);
+    localStorage.setItem('items', JSON.stringify(items));
+  } 
+
+  const clearAll = () => {
+    items.length = 0; // empty the array
+    populateItemList(items, itemsList);
+    localStorage.setItem('items', JSON.stringify(items));
+  }
+
+  // populate the list when window is refresh
+  populateItemList(items, itemsList);
+
+  addItems.addEventListener('submit', addItem);
+  deleteItems.addEventListener('click',deleteItem);
+  clearItems.addEventListener('click', clearAll);
+
+  // Delegation - targeting the responsible parents
+  itemsList.addEventListener('click', toggleDone);
+    
 
 </script>
 
