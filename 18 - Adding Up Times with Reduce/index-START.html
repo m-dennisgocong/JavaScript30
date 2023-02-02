@@ -182,6 +182,32 @@
     </li>
   </ul>
 <script>
+
+  const timeNode = Array.from(document.querySelectorAll('[data-time]')); // convert  Node list to Array
+
+  const seconds = timeNode
+  .map(node => node.dataset.time)
+  .map(timeCode => {
+    const [min,sec] = timeCode.split(':').map(parseFloat); // destructuring the min and sec and convert it to integer
+    return (min * 60) + sec; // total seconds for individual videos
+  })
+  .reduce((totalSeconds, vidSecs) => totalSeconds + vidSecs); //  total seconds for all videos
+  
+  function totalVideoTime(seconds){
+
+    let secondsLeft = seconds;
+    const hour = Math.floor(secondsLeft / 3600); // 1 hour = 3600 seconds
+
+    secondsLeft = secondsLeft % 3600; // ramaining seconds
+    const min = Math.floor(secondsLeft / 60); // 1 minute = 60 seconds
+
+    secondsLeft = secondsLeft % 60; // ramaining seconds
+
+    return `${hour}:${min}:${secondsLeft}`;
+  }
+
+  console.log(totalVideoTime(seconds));
+
 </script>
 </body>
 </html>
