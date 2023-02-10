@@ -27,6 +27,27 @@
 
   <script>
     // 👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀
+    const triggers = document.querySelectorAll('a'); // select all the anchor tag to be trigger
+    const highlight = document.createElement('span'); // create a span element
+    highlight.classList.add('highlight'); // add class heighlignt to span element  
+    document.body.appendChild(highlight); //append to the body
+
+    function highlightLink(){
+      const linkCoords = this.getBoundingClientRect(); // get the information value of the element relative to it's viewport
+      const coords = {
+      width: linkCoords.width,
+      height: linkCoords.height,
+      top: linkCoords.top + window.scrollY, // window.scrollY get how far you scroll 
+      left: linkCoords.left + window.scrollX  // window.scrollX get how far you scroll for horizontal 
+      };
+
+      highlight.style.width = `${coords.width}px`;
+      highlight.style.height = `${coords.height}px`;
+      highlight.style.transform = `translate(${coords.left}px, ${coords.top}px)`;
+    }
+
+    triggers.forEach(a => a.addEventListener('mouseenter', highlightLink)); // add event when mouse enter to trigger element
+
   </script>
 </body>
 </html>
